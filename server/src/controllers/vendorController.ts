@@ -3,9 +3,7 @@ import { Vendor, BookingSlot } from "../models"
 import { TimezoneUtils } from "../utils/timezone"
 
 export class VendorController {
-  /**
-   * GET /api/vendors - List all vendors
-   */
+
   static async getVendors(req: Request, res: Response) {
     try {
       const vendors = await Vendor.findAll({
@@ -42,7 +40,6 @@ export class VendorController {
         })
       }
 
-      // Validate date format
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
         return res.status(400).json({
           success: false,
@@ -50,7 +47,6 @@ export class VendorController {
         })
       }
 
-      // Check if vendor exists
       const vendor = await Vendor.findByPk(id)
       if (!vendor) {
         return res.status(404).json({
@@ -59,10 +55,10 @@ export class VendorController {
         })
       }
 
-      // Generate all possible slots for the date
+
       const allSlots = TimezoneUtils.generateDaySlots(date)
 
-      // Get booked slots for this vendor on this date
+  
       const bookedSlots = await BookingSlot.findAll({
         where: {
           vendorId: id,
@@ -73,7 +69,7 @@ export class VendorController {
 
       const bookedTimes = new Set(bookedSlots.map((slot) => slot.slotStartUtc.toISOString()))
 
-      // Filter out booked slots
+   
       const availableSlots = allSlots
         .filter((slot) => !bookedTimes.has(slot.toISOString()))
         .map((slot) => ({

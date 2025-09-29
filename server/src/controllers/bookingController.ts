@@ -9,13 +9,12 @@ import { Router } from "express"
 
 export class BookingController {
 
-  // Update your createBooking method in BookingController with debug logging:
 
 static async createBooking(req: Request, res: Response) {
   const transaction: Transaction = await sequelize.transaction()
 
   try {
-    // ADD THESE DEBUG LOGS
+   
     console.log("=== BACKEND DEBUG START ===")
     console.log("Request method:", req.method)
     console.log("Request URL:", req.url)
@@ -27,14 +26,14 @@ static async createBooking(req: Request, res: Response) {
     const { vendorId, startISO, endISO } = req.body
     const idempotencyKey = req.headers["idempotency-key"] as string
 
-    // DETAILED PARAMETER LOGGING
+
     console.log("Extracted parameters:")
     console.log("- vendorId:", vendorId, "type:", typeof vendorId, "truthy:", !!vendorId)
     console.log("- startISO:", startISO, "type:", typeof startISO, "truthy:", !!startISO)  
     console.log("- endISO:", endISO, "type:", typeof endISO, "truthy:", !!endISO)
     console.log("- idempotencyKey:", idempotencyKey, "type:", typeof idempotencyKey)
     
-    // VALIDATION CHECK DETAILS
+
     const vendorIdMissing = !vendorId
     const startISOMissing = !startISO
     const endISOMissing = !endISO
@@ -44,9 +43,7 @@ static async createBooking(req: Request, res: Response) {
     console.log("- startISO missing:", startISOMissing)
     console.log("- endISO missing:", endISOMissing)
     console.log("=== BACKEND DEBUG END ===")
-
-    // Validate required fields
-    if (!vendorId || !startISO || !endISO) {
+  if (!vendorId || !startISO || !endISO) {
       console.log("VALIDATION FAILED - Rolling back transaction")
       await transaction.rollback()
       return res.status(400).json({
@@ -55,9 +52,7 @@ static async createBooking(req: Request, res: Response) {
       })
     }
 
-    // ... rest of your existing code remains the same ...
-    
-    // Check idempotency
+
     const idempotencyCheck = await IdempotencyManager.checkIdempotency(idempotencyKey, "booking", {
       vendorId,
       startISO,
@@ -69,7 +64,7 @@ static async createBooking(req: Request, res: Response) {
       return res.json(idempotencyCheck.cachedResponse)
     }
 
-    // Validate vendor exists
+ 
     const vendor = await Vendor.findByPk(vendorId)
     if (!vendor) {
       await transaction.rollback()
@@ -82,7 +77,7 @@ static async createBooking(req: Request, res: Response) {
     const startTime = new Date(startISO)
     const endTime = new Date(endISO)
 
-    // Validate booking time (2-hour buffer for today)
+
     const timeValidation = TimezoneUtils.validateBookingTime(startTime)
     if (!timeValidation.valid) {
       await transaction.rollback()
@@ -92,7 +87,6 @@ static async createBooking(req: Request, res: Response) {
       })
     }
 
-    // Create booking
     const booking = await Booking.create(
       {
         vendorId,
@@ -104,7 +98,7 @@ static async createBooking(req: Request, res: Response) {
       { transaction },
     )
 
-    // Generate 30-minute slots and create booking slots
+
     const slots: Date[] = []
     const current = new Date(startTime)
 
@@ -114,7 +108,7 @@ static async createBooking(req: Request, res: Response) {
     }
 
     try {
-      // Create booking slots (this will fail if any slot is already booked)
+ 
       await BookingSlot.bulkCreate(
         slots.map((slot) => ({
           bookingId: booking.id,
@@ -126,7 +120,7 @@ static async createBooking(req: Request, res: Response) {
     } catch (error: any) {
       await transaction.rollback()
 
-      // Check if it's a unique constraint violation
+   
       if (error.name === "SequelizeUniqueConstraintError") {
         return res.status(409).json({
           success: false,
@@ -151,7 +145,6 @@ static async createBooking(req: Request, res: Response) {
       },
     }
 
-    // Store idempotency key
     if (idempotencyKey) {
       await IdempotencyManager.storeIdempotency(
         idempotencyKey,
@@ -178,9 +171,7 @@ static async createBooking(req: Request, res: Response) {
   
 
 
-  /**
-   * GET /api/bookings/:id - Get booking details
-   */
+ 
   static async getBooking(req: Request, res: Response) {
     try {
       const { id } = req.params
@@ -206,7 +197,7 @@ static async createBooking(req: Request, res: Response) {
         data: {
           id: booking.id,
           vendorId: booking.vendorId,
-          // vendor: booking.Vendor,
+          vendor: booking.Vendor,
           startTimeUtc: booking.startTimeUtc.toISOString(),
           endTimeUtc: booking.endTimeUtc.toISOString(),
           startTimeLagos: TimezoneUtils.utcToLagos(booking.startTimeUtc),
@@ -234,7 +225,7 @@ console.log("DEBUG: Controllers imported:", {
 
 const router = Router()
 
-// Booking routes
+
 console.log("DEBUG: Setting up booking routes")
 router.post("/bookings", BookingController.createBooking)
 router.get("/bookings/:id", BookingController.getBooking)

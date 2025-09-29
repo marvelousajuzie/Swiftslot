@@ -2,9 +2,7 @@ import crypto from "crypto"
 import { IdempotencyKey } from "../models"
 
 export class IdempotencyManager {
-  /**
-   * Check if request is idempotent and return cached response if exists
-   */
+
   static async checkIdempotency(
     key: string,
     scope: string,
@@ -17,7 +15,7 @@ export class IdempotencyManager {
     const existingKey = await IdempotencyKey.findByPk(key)
 
     if (existingKey) {
-      // Verify the request data matches
+
       const requestHash = this.hashRequest(requestData)
 
       if (existingKey.responseHash === requestHash) {
@@ -33,9 +31,7 @@ export class IdempotencyManager {
     return { isReplay: false }
   }
 
-  /**
-   * Store idempotency key with response
-   */
+
   static async storeIdempotency(key: string, scope: string, requestData: any, responseData: any): Promise<void> {
     if (!key) return
 

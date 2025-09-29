@@ -9,7 +9,7 @@ console.log("DEBUG: Routes imported:", routes)
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// Middleware
+
 app.use(helmet())
 app.use(
   cors({
@@ -20,7 +20,7 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// Request debugging middleware - ADDED BEFORE ROUTES
+
 app.use((req, res, next) => {
   console.log(`=== INCOMING REQUEST ===`)
   console.log(`Method: ${req.method}`)
@@ -37,11 +37,11 @@ app.use((req, res, next) => {
   next()
 })
 
-// Routes
+
 console.log("DEBUG: Registering routes under /api")
 app.use("/api", routes)
 
-// Add route debugging
+
 console.log("DEBUG: Registered routes:")
 app._router.stack.forEach((r: any) => {
   if (r.route) {
@@ -63,7 +63,7 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() })
 })
 
-// Error handling middleware
+
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error("Unhandled error:", err)
   res.status(500).json({
@@ -72,7 +72,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   })
 })
 
-// 404 handler - Add debugging here too
+
 app.use("*", (req, res) => {
   console.log(`DEBUG: 404 - Route not found: ${req.method} ${req.originalUrl}`)
   res.status(404).json({
@@ -81,14 +81,14 @@ app.use("*", (req, res) => {
   })
 })
 
-// Start server
+
 async function startServer() {
   try {
-    // Test database connection
+
     await sequelize.authenticate()
     console.log("Database connection established successfully.")
 
-    // Sync models (in production, use migrations instead)
+
     if (process.env.NODE_ENV !== "production") {
       await sequelize.sync({ alter: true })
       console.log("Database models synchronized.")
