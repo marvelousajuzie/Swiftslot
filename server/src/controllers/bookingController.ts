@@ -197,7 +197,7 @@ static async createBooking(req: Request, res: Response) {
         data: {
           id: booking.id,
           vendorId: booking.vendorId,
-          vendor: booking.Vendor,
+          // vendor: booking.Vendor,
           startTimeUtc: booking.startTimeUtc.toISOString(),
           endTimeUtc: booking.endTimeUtc.toISOString(),
           startTimeLagos: TimezoneUtils.utcToLagos(booking.startTimeUtc),

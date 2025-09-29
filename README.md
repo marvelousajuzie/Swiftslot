@@ -22,11 +22,15 @@ A professional booking application where buyers can book vendors in 30-minute sl
 - **UUID** for unique reference generation
 
 ### Frontend
-- **Next.js 14** with App Router
+- **Vite** with React Router
 - **React 18** with TypeScript
 - **Tailwind CSS** for styling
 - **SWR** for data fetching (planned)
 - **Lucide React** for icons
+
+### Testing
+- **Jest + Supertest** for backend API testing
+- **Vitest + React Testing Library** for frontend component testing
 
 ## Database Schema
 
@@ -164,16 +168,6 @@ curl -X POST http://localhost:3001/api/bookings \
 - Responsive design with Tailwind CSS
 - Loading states and error boundaries
 
-## Production Considerations
-
-- [ ] Replace mock payment with real payment processor
-- [ ] Add user authentication and authorization
-- [ ] Implement email notifications
-- [ ] Add booking cancellation/rescheduling
-- [ ] Set up proper database migrations
-- [ ] Add comprehensive logging and monitoring
-- [ ] Implement rate limiting and security headers
-- [ ] Add automated testing suite
 
 ## License
 

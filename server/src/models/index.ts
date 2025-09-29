@@ -138,6 +138,10 @@ export class Payment extends Model {
   public status!: "pending" | "success" | "failed"
   public rawEventJson!: object
   public readonly createdAt!: Date
+
+
+ 
+  // public Booking?: Booking
 }
 
 Payment.init(
