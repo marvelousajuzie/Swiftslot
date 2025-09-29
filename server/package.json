@@ -1,0 +1,29 @@
+{
+  "name": "swiftslot-server",
+  "version": "1.0.0",
+  "description": "SwiftSlot backend API",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "moment-timezone": "^0.5.43",
+    "mysql2": "^3.15.1",
+    "sequelize": "^6.35.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.5",
+    "@types/uuid": "^9.0.7",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3"
+  }
+}
